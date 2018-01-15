@@ -1,0 +1,7 @@
+[package]
+name = "cauterust"
+version = "0.1.0"
+authors = ["Jay Kickliter <jay@kickliter.com>"]
+
+[dependencies]
+ess = "0.4.1"

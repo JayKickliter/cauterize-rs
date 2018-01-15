@@ -1,0 +1,14 @@
+[[package]]
+name = "cauterust"
+version = "0.1.0"
+dependencies = [
+ "ess 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "ess"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[metadata]
+"checksum ess 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)" = "8a9ea66f13b27f66cb1e8f064f938a9ceb5d6e290d85d7901f9ed4e7723a31f2"
