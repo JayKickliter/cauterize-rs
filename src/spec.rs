@@ -1,12 +1,14 @@
-type Integer = isize;
-type Identifier = String;
-type Hash = sha1::Digest;
-type Length = usize;
-type Offset = isize;
-type Version = String;
+use sha1::Digest;
+
+pub type Integer = isize;
+pub type Identifier = String;
+pub type Hash = Digest;
+pub type Length = usize;
+pub type Offset = isize;
+pub type Version = String;
 
 #[derive(Debug)]
-struct Specification {
+pub struct Specification {
     name: String,
     version: Version,
     fingerprint: Hash,
@@ -14,11 +16,11 @@ struct Specification {
     depth: Integer,
     type_length: Integer,
     length_tag: Tag,
-    types: Vec<Type>
+    // types: Vec<Type>
 }
 
 #[derive(Debug)]
-struct Type {
+pub struct Type {
     pub name: Identifier,
     pub fingerprint: Hash,
     pub size: Size,
@@ -27,7 +29,7 @@ struct Type {
 }
 
 #[derive(Debug)]
-enum TypeDesc {
+pub enum TypeDesc {
     Synonym { id: Identifier },
     Range {
         offset: Offset,
@@ -49,7 +51,7 @@ enum TypeDesc {
 
 
 #[derive(Debug)]
-enum Field {
+pub enum Field {
     Data {
         name: Identifier,
         index: Integer,
@@ -59,13 +61,13 @@ enum Field {
 }
 
 #[derive(Debug)]
-struct EnumVal {
+pub struct EnumVal {
     name: Identifier,
     index: Integer,
 }
 
 #[derive(Debug)]
-enum Tag {
+pub enum Tag {
     T1,
     T2,
     T4,
@@ -73,7 +75,7 @@ enum Tag {
 }
 
 #[derive(Debug)]
-struct Size {
+pub struct Size {
     min: Integer,
     max: Integer,
 }
@@ -81,7 +83,7 @@ struct Size {
 
 
 #[derive(Debug)]
-enum Prim {
+pub enum Prim {
     U8,
     U16,
     U32,

@@ -14,22 +14,20 @@ pub Specification: spec::Specification = {
         => spec::Specification{ <> }
 };
 
-Name: String =  => s;
+Name: String = "(" "name" <s:StringLiteral> ")" => s;
 Version: String = "(" "version" <s:StringLiteral> ")" => s;
-Fingerprint: spec::Hash = "(" "fingerprint" r"[0-9a-f]{40,40}" ")" => <>.into();
+Fingerprint: spec::Hash = "(" "fingerprint" r"[0-9a-f]{40}" ")" => <>.into();
 Size: spec::Size = "(" "size" <min:Integer> <max:Integer> ")" => spec::Size{ <> };
 Depth: spec::Integer = "(" "depth" Integer ")" => <>;
 TypeLength: spec::Integer = "(" "typelength" Integer ")" => <>;
 LengthTag: spec::Tag = "(" "lengthtag" Tag ")" => <>;
 // Types: Vec<spec::Type> = <Type*>;
-Integer: spec::Integer = <i:r"[-]?\d+"> => spec::Integer::from_str(i).unwrap();
+Integer: spec::Integer = <i:r"[-]?\d{1,39}"> => spec::Integer::from_str(i).unwrap();
 Tag: spec::Tag = {
     "t1" => spec::Tag::T1,
     "t2" => spec::Tag::T2,
     "t4" => spec::Tag::T4,
     "t8" => spec::Tag::T8,
 };
-
-
 
 StringLiteral: String = <r#"".*""#> => String::from(<>);
