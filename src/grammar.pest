@@ -1,0 +1,91 @@
+spec = { soi ~ header ~ spec_type* ~ eoi }
+
+header = { soi ~ name ~ version ~ fingerprint ~ size ~ depth ~ typelength ~ lengthtag }
+
+// (name "msg")
+name = { lp ~ "name" ~ str_lit ~ rp }
+
+// (version "0.1.0")
+version = { lp ~ "version" ~ str_lit ~ rp }
+
+// (fingerprint 9a577f4f75e0999ad15b4e3732a6975a05639e2e)
+fingerprint = _{ lp ~ "fingerprint" ~ hex{40} ~ rp }
+
+// (size 1 12)
+size = { lp ~ "size" ~ integer ~ integer ~ rp }
+
+// (depth 2)
+depth = { lp ~ "depth" ~ integer ~ rp }
+
+// (typelength 1)
+typelength = { lp ~ "typelength" ~ integer ~ rp }
+
+// (lengthtag t1)
+lengthtag = { lp ~ "lengthtag" ~ tag ~ rp }
+
+spec_type = { lp ~ "type" ~ ident ~ (record | union) ~ rp }
+
+// Record
+// (type 
+//   req
+//   record
+//   (fingerprint a24d177104479eb0b1757107b17f8a37a9f6f6d8)
+//   (size 12 12)
+//   (depth 2)
+//   (fields (field seq 0 u32) (field data 1 u64)))
+record        = { "record" ~ fingerprint ~ size ~ depth ~ record_fields }
+record_fields = { lp ~ "fields" ~ record_field+ ~ rp }
+record_field  = { lp ~ "field" ~ ident ~ field_idx ~ field_type ~ rp }
+
+// Union
+// (type 
+//   transaction
+//   union
+//   (fingerprint b131185d0e4b8ea2c1662bbab9eda02f2a2c7f24)
+//   (size 13 13)
+//   (depth 3)
+//   t1
+//   (fields (field req 1 req) (field res 2 res)))
+union        = { "union" ~ fingerprint ~ size ~ depth ~ tag ~ union_fields }
+union_fields = { lp ~ "fields" ~ union_field+ ~ rp }
+union_field  = { lp ~ "field" ~ ident ~ field_idx ~ field_type ~ rp }
+
+
+field_idx = { integer }
+field_type = { ident }
+
+
+all_chars = _{'a'..'z' | 'A'..'Z' | "_" | '0'..'9'}
+// Used everywhere where an ident is used, except when accessing
+// data from the context.
+// Eg block name, argument name, macro name etc
+ident = @{
+    ('a'..'z' | 'A'..'Z' | "_") ~
+    all_chars*
+}
+
+// Tag
+tag = { "t1" | "t2" | "t4" | "t8" }
+t1 = { "t1" }
+t2 = { "t2" }
+t4 = { "t4" }
+t8 = { "t8" }
+
+integer = @{ ("+" | "-")? ~ int }
+float   = @{ ("+" | "-")? ~ int ~ ("." ~ digits ~ exp? | exp)? }
+int     = @{ "0" | ('1'..'9' ~ digits?) }
+digits  = @{ (digit | ("_" ~ digit))+ }
+digit   =  { '0'..'9' }
+exp     = @{ ("E" | "e") ~ ("+" | "-")? ~ int }
+hex     = { '0'..'9' | 'a'..'f' | 'A'..'F'  }
+
+
+// matches anything between 2 double quotes
+str_lit = { "\"" ~ ( ! ("\"") ~ any )* ~ "\""}
+
+// Start of s-expression.
+lp = _{ "(" }
+// End of s-expression.
+rp = _{ ")" }
+
+whitespace = _{ " " | "\t" | "\r" | "\n" }
